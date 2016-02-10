@@ -20,8 +20,8 @@ int messageAcc = 0;
 int previousTime = 0;
 int deltaTime = 0;
 
-String ipAddress = "127.0.0.1";
-//String ipAddress = "10.10.50.65";
+//String ipAddress = "127.0.0.1";
+String ipAddress = "10.10.6.9"; // Linux dans le 1134
 
 int port = 32999;
 
@@ -33,6 +33,7 @@ void setup() {
   background(204);
   stroke(0);
   frameRate(30);
+
   c = new Client(this, ipAddress, port);
   
   values = new byte[matrixHeight * matrixWidth];
@@ -52,13 +53,12 @@ void draw(){
   
   messageAcc += deltaTime;
   
-  
+  manageKeys();
 }
 
-void keyPressed() {
-  println ("keyPressed"); //<>//
+void manageKeys() {
   if (messageAcc >= messageInterval) {
-    messageAcc = 0;
+    if (keyPressed) messageAcc = 0;
     
     if (key == 'p' || key == 'P') {
       pause = !pause;
@@ -95,35 +95,56 @@ void keyPressed() {
   }
 }
 
+void keyPressed() {
+  println ("keyPressed"); //<>//
+
+}
+
 void buildArray() {
   String data = "";
   int bpp = 3;
   
+  int widthStep;
+  
   for(int j = 0; j < matrixHeight; j++){
-   int vStep = j * matrixWidth * 3;
-   for(int i = 0; i < matrixWidth; i++){
+    widthStep = j * matrixWidth;
+     for(int i = 0; i < matrixWidth; i++){
      
+       
+       
      int R = int(float(i) / matrixWidth * 255); // Valeur entre 0 et 1
      int G = int(float(i * j) / maxIndex * 255) ; // Valeur entre 0 et 1
      int B = int(float(j) / matrixHeight * 255); // Valeur entre 0 et 1
      
-     data += R + " "; // R
-     data += G + " "; // G
-     data += B + " "; // B
-     /**
-     if ( i == matrixWidth / 2) {
-       data += 255 + " "; // R
-       data += 255 + " "; // G
-       data += 255 + " "; // B
-
-     } else {
-       data += 0 + " ";
-       data += 0 + " ";
-       data += 0 + " ";
-     }
+    
+     //if ((widthStep + i) % 2 != j % 2) {
+     // data += 255 + " "; // R
+     // data += 255 + " "; // G
+     // data += 255 + " "; // B
+     //} else {
+     // data += 0 + " ";
+     // data += 0 + " ";
+     // data += 0 + " ";
+     //}
+    
      
-     */
-   }   
+     data += R + " "; // R
+     data += B + " "; // G
+     data += G + " "; // B
+     
+     
+       //if ( i == matrixWidth / 2) {
+       //  data += 255 + " "; // R
+       //  data += 255 + " "; // G
+       //  data += 255 + " "; // B
+      
+       //} else {
+       //  data += 0 + " ";
+       //  data += 0 + " ";
+       //  data += 0 + " ";
+       //}
+     
+     }   
   }
   
   json.setInt("bytePerPixel", bpp);
